@@ -1,18 +1,25 @@
 #pragma once
 
-class TaskTrigger
+#include <Windows.h>
+#include "UIMessageLoop.h"
+
+struct ITaskDispatcher;
+struct ITaskAllocator;
+
+class CTaskTrigger : public CUIMessageLoop::ITimerHandler
 {
 public:
-	TaskTrigger(unsigned int interval_miniseconds, unsigned int task_type);
-	~TaskTrigger(void);
+	CTaskTrigger(CUIMessageLoop* message_loop, ITaskDispatcher* dispatcher);
+	~CTaskTrigger(void);
 
-	void Run();
-	void Stop();
+	bool StartTaskTimer(int task_type, unsigned int elapse_miniseconds);
 
 protected:
-	unsigned int interval_miniseconds_;
-	unsigned int task_type_;
-	UINT_PTR	 task_timer_;
+	virtual bool OnTimer( UINT timer_id, UINT trigger_times, void* params );
 
-	static unsigned int max_timer_id_;
+protected:
+	CUIMessageLoop*		message_loop_;
+	ITaskDispatcher*	task_dispather_;
+	ITaskAllocator*		task_allocator_;
+	unsigned int		max_task_id_;
 };

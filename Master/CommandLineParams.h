@@ -7,7 +7,7 @@
 #ifndef _CommandLineParams_h__
 #define _CommandLineParams_h__
 
-#include "include/tstring.h"
+#include "tstring.h"
 #include <vector>
 
 class CommandLineParams

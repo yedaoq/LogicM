@@ -26,7 +26,7 @@ void CSlaveProcessManager::CheckForProcessState()
 
 }
 
-SlaveProcessHandle CSlaveProcessManager::CreateSlaveProcess( unsigned int task_type )
+SlaveProcessHandle CSlaveProcessManager::CreateSlave( unsigned int task_type )
 {
 	printf("master : create slave %d\n", task_type);
 
@@ -144,7 +144,7 @@ HANDLE CSlaveProcessManager::CreateSlaveProcess(unsigned int task_type, HANDLE s
 	return process_info.hProcess;
 }
 
-SlaveProcessHandleV2 CSlaveProcessManager::CreateSlaveProcessV2( unsigned int task_type )
+SlaveProcessHandleV2 CSlaveProcessManager::CreateSlaveV2( unsigned int task_type )
 {
 	//printf("master : create slave %d\n", task_type);
 

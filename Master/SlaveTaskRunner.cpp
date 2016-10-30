@@ -76,8 +76,8 @@ void CSlaveTaskRunner::CheckForTaskTimeout()
 
 bool CSlaveTaskRunner::LaunchSlave()
 {
-	//slave_process_handle_ = process_manager_->CreateSlaveProcess(task_type_);
-	slave_process_handle_ = process_manager_->CreateSlaveProcessV2(task_type_);
+	//slave_process_handle_ = process_manager_->CreateSlave(task_type_);
+	slave_process_handle_ = process_manager_->CreateSlaveV2(task_type_);
 	if (INVALID_HANDLE_VALUE == slave_process_handle_.process_handle || NULL == slave_process_handle_.process_handle)
 	{
 		return false;

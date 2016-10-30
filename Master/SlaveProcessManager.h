@@ -45,8 +45,8 @@ public:
 	~CSlaveProcessManager(void);
 
 	void				CheckForProcessState();
-	SlaveProcessHandle	CreateSlaveProcess(unsigned int task_type);
-	SlaveProcessHandleV2	CreateSlaveProcessV2(unsigned int task_type);
+	SlaveProcessHandle	CreateSlave(unsigned int task_type);
+	SlaveProcessHandleV2	CreateSlaveV2(unsigned int task_type);
 
 protected:
 	bool		CreateNamedPipe(HANDLE* server_handle, HANDLE* client_handle);

@@ -76,15 +76,12 @@ void CSlaveTaskRunner::CheckForTaskTimeout()
 
 bool CSlaveTaskRunner::LaunchSlave()
 {
-	//slave_process_handle_ = process_manager_->CreateSlave(task_type_);
 	slave_process_handle_ = process_manager_->CreateSlaveV2(task_type_);
 	if (INVALID_HANDLE_VALUE == slave_process_handle_.process_handle || NULL == slave_process_handle_.process_handle)
 	{
 		return false;
 	}
 
-// 	io_driver_->Attach(slave_process_handle_.response_read_handle, this);
-// 	io_driver_->Attach(slave_process_handle_.request_write_handle, this);
 	io_driver_->Attach(slave_process_handle_.message_handle, this);
 	
 	response_read_buffer_written_bytes_ = 0;
@@ -99,13 +96,11 @@ void CSlaveTaskRunner::OnIoComplete( HANDLE device_handle, LPOVERLAPPED overlapp
 	{
 		OnSlaveProcessError(errorcode);
 	}
-	//else if (device_handle == slave_process_handle_.response_read_handle)
 	else if(overlapped == &response_read_overlapped_)
 	{
 		response_read_buffer_written_bytes_ += bytes_transfered;
 		OnResponseArrive();		
 	}
-	//else if ( device_handle == slave_process_handle_.request_write_handle)
 	else if(overlapped == &request_write_overlapped_)
 	{
 
@@ -154,28 +149,6 @@ void CSlaveTaskRunner::DetachSlave()
 		CloseHandle(slave_process_handle_.process_handle);
 	}
 
-// 	if (0 != slave_process_handle_.request_write_handle)
-// 	{
-// 		if (io_driver_)
-// 		{
-// 			io_driver_->Detach(slave_process_handle_.request_write_handle);
-// 			CancelIo(slave_process_handle_.request_write_handle);
-// 		}
-// 
-// 		CloseHandle(slave_process_handle_.request_write_handle);
-// 	}
-// 
-// 	if (0 != slave_process_handle_.response_read_handle)
-// 	{
-// 		if (io_driver_)
-// 		{
-// 			io_driver_->Detach(slave_process_handle_.response_read_handle);
-// 			CancelIo(slave_process_handle_.response_read_handle);
-// 		}
-// 
-// 		CloseHandle(slave_process_handle_.response_read_handle);
-// 	}
-
 	if (0 != slave_process_handle_.message_handle)
 	{
 		if (io_driver_)
@@ -194,11 +167,6 @@ void CSlaveTaskRunner::DetachSlave()
 
 void CSlaveTaskRunner::BeginReadResponse()
 {
-// 	if(!ReadFile(slave_process_handle_.response_read_handle, response_read_buffer_, response_read_buffer_size_ - response_read_buffer_written_bytes_, NULL, &response_read_overlapped_))
-// 	{
-// 		printf("ReadFile fail handle - %08x, error - %d\n", slave_process_handle_.response_read_handle, GetLastError());
-// 	}
-
 	//printf("BeginReadResponse\n");
 
 	if(!ReadFile(slave_process_handle_.message_handle, response_read_buffer_, response_read_buffer_size_ - response_read_buffer_written_bytes_, NULL, &response_read_overlapped_))
@@ -225,11 +193,6 @@ void CSlaveTaskRunner::BeginSendRequest()
 		CTaskData* task = queued_tasks_.front()->task_data;
 		printf("master : send task %d\n", task->GetTaskID());
 		
-// 		if(!WriteFile(slave_process_handle_.request_write_handle, task->RawBuffer(), task->RawBufferSize(), NULL, &request_write_overlapped_))
-// 		{
-// 			printf("WriteFile fail handle - %08x, error - %d\n", slave_process_handle_.response_read_handle, GetLastError());
-// 			exit(0);
-// 		}
 		if(!WriteFile(slave_process_handle_.message_handle, task->RawBuffer(), task->RawBufferSize(), NULL, &request_write_overlapped_))
 		{
 			if (GetLastError() != ERROR_IO_PENDING)

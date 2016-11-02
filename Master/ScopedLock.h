@@ -16,6 +16,16 @@ public:
 class CLockableCriticalSection : public CLockable
 {
 public:
+	CLockableCriticalSection()
+	{
+		InitializeCriticalSection(&cs_);
+	}
+
+	~CLockableCriticalSection()
+	{
+		DeleteCriticalSection(&cs_);
+	}
+
 	virtual void Lock()
 	{
 		EnterCriticalSection(&cs_);
@@ -75,8 +85,16 @@ protected:
 class CScopedLock
 {
 public:
-	CScopedLock(CLockable& lock);
-	~CScopedLock(void);
+	CScopedLock(CLockable& lock)
+		: lock_(lock)
+	{
+		lock_.Lock();
+	}
+
+	~CScopedLock(void)
+	{
+		lock_.Unlock();
+	}
 
 protected:
 	CLockable& lock_;
